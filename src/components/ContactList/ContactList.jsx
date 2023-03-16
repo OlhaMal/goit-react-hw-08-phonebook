@@ -1,25 +1,44 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { removeContact } from 'redux/contacts/contactsOperations';
-import { getFilteredContacts } from 'redux/contacts/contactsSelectors';
-import css from './ContactList.module.css';
+import { deleteContact } from 'redux/contacts/contactsOperations';
+import { nanoid } from 'nanoid';
+// import css from './ContactList.module.css';
+import { Typography, Button } from '@mui/material';
 
 export const ContactList = () => {
-  const visibleContacts = useSelector(getFilteredContacts);
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.filter.filter);
 
-  const contactList = visibleContacts.map(({ id, name, phone }) => (
-    <li key={id} className={css.listItem}>
-      {name}: {phone}
-      <button
-        type="button"
-        className={css.listBtn}
-        id={id}
-        onClick={() => dispatch(removeContact(id))}
-      >
-        Delete
-      </button>
-    </li>
-  ));
+  const normalizeFilter = filter.toLocaleLowerCase();
 
-  return <ul className={css.contactList}>{contactList}</ul>;
+  const filterContacts = contacts.filter(contact => {
+    return contact.name.toLocaleLowerCase().includes(normalizeFilter);
+  });
+
+  return (
+    <ul>
+      {filterContacts.map(contact => {
+        return (
+          <li
+            key={nanoid()}
+            style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px'}}
+          >
+            <Typography variant="h6" component="p">
+              {contact.name}: {contact.number}
+            </Typography>
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="medium"
+              sx={{ border: '1px solid #8e989f'}}
+              type="button"
+              onClick={() => dispatch(deleteContact(contact.id))}
+            >
+              Delete
+            </Button>
+          </li>
+        );
+      })}
+    </ul>
+  );
 };

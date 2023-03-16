@@ -1,66 +1,38 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
-import * as api from '../../shared/contacts';
+import axios from 'axios';
 
 export const fetchContacts = createAsyncThunk(
-  'contacts/fetch',
+  'contacts/fetchAll',
   async (_, thunkAPI) => {
     try {
-      const data = await api.getContacts();
-      return data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      const response = await axios.get('/contacts');
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
   }
 );
-
-const isDublicate = ({ name }, contacts) => {
-  const normalizedName = name.toLocaleLowerCase();
-
-  const result = contacts.find(item => {
-    return normalizedName === item.name.toLocaleLowerCase();
-  });
-  return Boolean(result);
-};
 
 export const addContact = createAsyncThunk(
-  'contacts/add',
-  async (data, { rejectWithValue }) => {
+  'contacts/addContact',
+  async ({ name, number }, thunkAPI) => {
     try {
-      const result = await api.addContact(data);
-      return result;
-    } catch (error) {
-      return rejectWithValue(error);
+      const response = await axios.post('/contacts', { name, number });
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
-  },
-  {
-    condition: (data, { getState }) => {
-      const { contacts } = getState();
-      if (isDublicate(data, contacts.items)) {
-        toast.warn(`${data.name} is already in contacts.`, {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
-        return false;
-      }
-    },
   }
 );
 
-export const removeContact = createAsyncThunk(
-  'contact/remove',
-  async (id, { rejectWithValue }) => {
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContacts',
+  async (contactId, thunkAPI) => {
     try {
-      await api.removeContact(id);
-      return id;
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const response = await axios.delete(`/contacts/${contactId}`);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
   }
 );

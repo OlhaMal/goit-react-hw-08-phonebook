@@ -1,53 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, addContact, removeContact } from './contactsOperations';
+import { fetchContacts, addContact, deleteContact } from './contactsOperations';
 
-const initialState = {
-  items: [],
-  isLoading: false,
-  error: null,
+const handlePending = state => {
+  state.isLoading = true;
 };
 
-const contactsSlice = createSlice({
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
+
+export const contactsSlice = createSlice({
   name: 'contacts',
-  initialState,
+  initialState: {
+    contacts: [],
+    isLoading: false,
+    error: null,
+  },
   extraReducers: {
-    [fetchContacts.pending]: store => {
-      store.isLoading = true;
-      store.error = null;
+    [fetchContacts.pending]: handlePending,
+    [fetchContacts.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.contacts = action.payload;
     },
-    [fetchContacts.fulfilled]: (store, { payload }) => {
-      store.isLoading = false;
-      store.items = payload;
+    [fetchContacts.rejected]: handleRejected,
+    [addContact.pending]: handlePending,
+    [addContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.contacts.unshift(action.payload);
     },
-    [fetchContacts.rejected]: (store, { payload }) => {
-      store.isLoading = false;
-      store.error = payload;
+    [addContact.rejected]: handleRejected,
+    [deleteContact.pending]: handlePending,
+    [deleteContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.contacts.findIndex(
+        task => task.id === action.payload.id
+      );
+      state.contacts.splice(index, 1);
     },
-    [addContact.pending]: store => {
-      store.isLoading = true;
-      store.error = null;
-    },
-    [addContact.fulfilled]: (store, { payload }) => {
-      store.isLoading = false;
-      store.items.unshift(payload);
-    },
-    [addContact.rejected]: (store, { payload }) => {
-      store.isLoading = false;
-      store.error = payload;
-    },
-    [removeContact.pending]: store => {
-      store.isLoading = true;
-      store.error = null;
-    },
-    [removeContact.fulfilled]: (store, { payload }) => {
-      store.isLoading = false;
-      store.items = store.items.filter(item => item.id !== payload);
-    },
-    [removeContact.rejected]: (store, { payload }) => {
-      store.isLoading = false;
-      store.error = payload;
-    },
+    [deleteContact.rejected]: handleRejected,
   },
 });
-
-export default contactsSlice.reducer;

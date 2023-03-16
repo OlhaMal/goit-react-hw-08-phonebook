@@ -1,45 +1,42 @@
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
 import { ToastContainer } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { Register } from 'pages/Register';
+import { Login } from 'pages/Login';
+import { Contacts } from 'pages/Contacts';
+// import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
+import { Layout } from 'pages/Layout';
+import { HomePage } from 'pages/HomePage';
+import { Route, Routes } from 'react-router-dom';
+import {PrivateRoute} from './PrivateRoute';
+import {PublicRoute} from './PublicRoute';
 
 export const App = () => {
-  const isLoading = useSelector(state => state.contacts.isLoading);
-
   return (
-    <div>
-      <h1
-        style={{
-          fontSize: 'xx-large',
-          textAlign: 'center',
-          marginTop: '30px',
-        }}
-      >
-        Phonebook
-      </h1>
-      <ContactForm />
-      <h2
-        style={{
-          textAlign: 'center',
-          fontSize: 'x-large',
-          marginTop: '5px',
-        }}
-      >
-        Contacts
-      </h2>
-      <Filter />
-
-      {isLoading ? (
-        <b
-          style={{ textAlign: 'center', display: 'block', fontSize: 'x-large' }}
-        >
-          Loading...
-        </b>
-      ) : (
-        <ContactList />
-      )}
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route
+            path="register"
+            element={
+                <PublicRoute component={Register} redirectTo="/contacts" />
+            }
+          />
+          <Route
+            path="login"
+            element={
+              <PublicRoute component={Login} redirectTo="/contacts" />
+            }
+          />
+          <Route
+            path="contacts"
+            element={
+                <PrivateRoute component={Contacts} redirectTo="/login" />
+            }
+          />
+          <Route path="*" element={<HomePage />} />
+        </Route>
+      </Routes>
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -52,6 +49,6 @@ export const App = () => {
         pauseOnHover={false}
         theme="light"
       />
-    </div>
+    </>
   );
 };
