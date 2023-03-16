@@ -11,7 +11,7 @@ export const HomePage = () => {
             <Typography variant="h3" component="h3" sx={{mt: 6}}>Welcome</Typography>
             <Typography variant="h6" component="p">To use this aplication, you need to <span>Sign in</span> or <span>Sign up</span>. </Typography>
             <Typography variant="h6" component="p">You can quickly check the functionality by signing in to the system with test login.</Typography>
-            <Typography variant='p' component='p'>Login: <b>randomEmail@ran.com</b></Typography>
+            <Typography variant='p' component='p'>Login: <b>randomemail@ran.com</b></Typography>
             <Typography variant='p' component='p'>Password: <b>qweqweqwe</b></Typography>
             {!isLoggedIn && (
                 <ul style={{display: 'flex', gap: '32px'}}>
