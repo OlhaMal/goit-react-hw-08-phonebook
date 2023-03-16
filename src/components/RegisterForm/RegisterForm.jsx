@@ -21,7 +21,7 @@ export const RegisterForm = () => {
   };
 
   return (
-    <div>
+    <div style={{maxWidth: '400px', margin: '0 auto'}}>
       <form
         onSubmit={handleSubmit}
         autoComplete="off"

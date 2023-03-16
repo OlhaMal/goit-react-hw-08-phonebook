@@ -20,7 +20,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <div>
+    <div style={{maxWidth: '400px', margin: '0 auto'}}>
       <form
         onSubmit={handleSubmit}
         style={{ display: 'flex', flexDirection: 'column' }}

@@ -1,0 +1,16 @@
+.link {
+    padding: 8px 16px;
+  margin-right: 288px;
+  text-transform: uppercase;
+  transition: opacity ease-in-out 250ms, border ease-in-out 250ms, border-radius ease-in-out 250ms;
+  border: 1px solid transparent ;
+  opacity: 0.6;
+}
+
+.link:hover,
+.link:focus {
+  opacity: 1;
+  border: 1px solid black;
+  border-radius: 4px;
+
+}
